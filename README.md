@@ -117,7 +117,7 @@ Rules for an agent writing code against this package. Each one is a mistake that
 |----|---------|
 | Import only `package:magic_picker/magic_picker.dart` | Everything under `src/` is private; the barrel also exports `XFile` and `CameraDevice`. |
 | Register `PickerServiceProvider` in `lib/config/app.dart` | It is not auto-registered, and without it `Storage.download` throws on mobile and desktop. |
-| Treat a `null` or empty result as a cancelled pick | Cancelling is not an error. |
+| Treat a `null` or empty result as a cancelled pick | Cancelling is not an error. `Pick.saveFile` on the web is the exception: `null` there means the browser downloaded the file. |
 | Pass `onError` or `fallbackToGallery` to `Pick.camera` and `Pick.recordVideo` | Otherwise a refused camera permission rethrows. |
 | Read `savedTo.scheme` before `toFilePath()` on a `Pick.saveFile` result | Only `file` uris are paths you can open; Android answers the document uri's path part with no scheme, and the web answers `null` after a browser download. |
 | `await` `toXFile()` in code that also builds for the web | It is a `Future` there and synchronous elsewhere. |
