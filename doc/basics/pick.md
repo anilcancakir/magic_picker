@@ -147,13 +147,13 @@ Future<void> save(Uint8List pdfBytes) async {
 }
 ```
 
-`saveFile` opens the platform save dialog, writes the bytes and answers the `Uri` it wrote to, or `null` when the user cancels. The scheme depends on the platform:
+`saveFile` opens the platform save dialog, writes the bytes and answers the `Uri` it wrote to, or `null` when the user cancels. The web has no dialog here: the browser downloads the file. The scheme depends on the platform:
 
 | Platform | Scheme |
 |:---------|:-------|
 | Desktop and iOS | `file` |
 | Android | `content` (Storage Access Framework) |
-| Web | `blob` |
+| Web | None: the answer is always `null`, because the browser reports no location |
 
 Call `toFilePath()` only after checking for `file`. The MIME type comes from the extension of `fileName` (`report.pdf` becomes `application/pdf`) and falls back to `application/octet-stream`. Pass `mimeType` when the extension does not describe the content: Android and the browser both use it to choose the app that opens the file.
 
@@ -166,7 +166,7 @@ Call `toFilePath()` only after checking for `file`. The MIME type comes from the
 |:-------|:--------|
 | `name`, `extension`, `mimeType` | The file name, its extension without the dot, and a MIME type: the one the picker reports, else one derived from the name (`null` when the extension is unknown). |
 | `size` | Bytes, filled for every pick. Treat `null` and `0` as unknown when you enforce an upload limit. |
-| `path` | The file path on mobile and desktop. On the web an image, video or media pick answers a `blob:` URL; a `Pick.file` or `Pick.files` pick answers `null`. |
+| `path` | The file path when the platform gives one, `null` otherwise; mobile and desktop picks give one. On the web an image, video or media pick answers a `blob:` URL; a `Pick.file` or `Pick.files` pick answers `null`. |
 | `isImage`, `isVideo` | Derived from the extension. |
 | `readAsBytes()` | The bytes, read once and cached. |
 | `store(path, {disk})`, `storeAs(directory, {disk})` | Write to `Storage`; `storeAs` generates a unique name. |
@@ -205,7 +205,7 @@ Each platform's permission setup (photo library and camera usage descriptions on
 | Calling `Pick.camera` with no `onError` and no fallback | A refused permission rethrows. Pass one of the two. |
 | Reading `path` on the web | It is a `blob:` URL for an image pick and `null` for a `Pick.file` pick, and neither is a file path; use `readAsBytes` or `store`. |
 | Trusting `size` as a limit | It can be `null` or `0` when the file vanished after the pick. Check the stored size too. |
-| Calling `savedTo.toFilePath()` without checking the scheme | Only `file` uris convert; `content` and `blob` throw. |
+| Calling `savedTo.toFilePath()` without checking the scheme | Only `file` uris convert; a `content` uri throws. |
 | Passing `withData` to `Pick.file` or `Pick.files` | The parameter no longer exists. Read bytes with `readAsBytes`. |
 | Calling `Pick.directory` on the web | It is not supported there. |
 

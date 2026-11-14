@@ -7,6 +7,13 @@ All notable changes to this project will be documented in this file.
 ### Changed
 
 - The package page is `https://anilcancakir.com/magic/picker` and the documentation links sit under `https://anilcancakir.com/magic/docs/picker` (the pub.dev page carries it from the next release).
+- The README now has a short `XFile` sample.
+
+### Fixed
+
+- The docs and the `Pick.saveFile` API comment no longer say the web answers a `blob` URI: on the web the browser downloads the file and `saveFile` answers `null`.
+- The `MagicFile.path` description says the path is present when the platform gives one, instead of promising it on every mobile pick.
+- The Windows note on `Storage.download` names what `share_plus` does on a Windows older than 10 version 1809: it throws `UnimplementedError` for any file.
 
 ## [1.0.1] - 2026-11-15
 

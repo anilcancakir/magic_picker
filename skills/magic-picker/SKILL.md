@@ -1,8 +1,8 @@
 ---
 name: magic-picker
-description: "Pick files, images and videos in a Magic app with the Pick facade, and share downloads through magic_picker's PickerServiceProvider."
+description: "Pick files, images and videos in a Magic app with the Pick facade and route Storage.download through PickerServiceProvider."
 version: 1.0.1
-when_to_use: "Use when code imports package:magic_picker or touches Pick, PickerServiceProvider, toMagicFile, toXFile or Storage.download on mobile or desktop in a Magic app."
+when_to_use: "Use when code imports package:magic_picker or touches Pick, PickerServiceProvider, toMagicFile or toXFile."
 ---
 
 # magic_picker
@@ -26,7 +26,7 @@ Requires Dart >=3.13, Flutter >=3.47 and `magic` ^1.0.0. The installer registers
 2. Give `Pick.camera` and `Pick.recordVideo` an `onError`, `fallbackToGallery: true`, or both. With neither, a refused camera permission rethrows. With `onError` alone the call answers `null`.
 3. Pass `extensions` without the dot (`['pdf']`). Do not pass `withData` to `Pick.file` or `Pick.files`; it no longer exists. Bytes load on demand through `readAsBytes`.
 4. `Pick.directory` returns a path `String?` and is not available on the web.
-5. `Pick.saveFile` requires `fileName` and `bytes` and answers a `Uri`. Check `scheme == 'file'` before `toFilePath()`: Android answers `content` and the web `blob`.
+5. `Pick.saveFile` requires `fileName` and `bytes` and answers a `Uri`. Check `scheme == 'file'` before `toFilePath()`: Android answers `content`, and the web answers `null` after a browser download.
 6. `MagicFile.size` is filled for every pick, but a file removed after the pick leaves `null` or `0`. Treat both as unknown when enforcing an upload limit.
 7. `MagicFile` lives in `package:magic/magic.dart`; import it when you name the type.
 

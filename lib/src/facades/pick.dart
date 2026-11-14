@@ -345,8 +345,9 @@ class Pick {
   ///
   /// Returns the [Uri] the file was written to, or null if cancelled. The
   /// scheme is platform-dependent: `file` on desktop and iOS, `content` on
-  /// Android SAF, `blob` on the web. Read [Uri.toFilePath] only after checking
-  /// for a `file` scheme.
+  /// Android SAF. The web downloads the file through the browser and always
+  /// returns null. Read [Uri.toFilePath] only after checking for a `file`
+  /// scheme.
   ///
   /// **Parameters:**
   /// - [fileName]: File name to save as, extension included.

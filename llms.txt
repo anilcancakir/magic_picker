@@ -35,7 +35,7 @@ Future<void> main() async {
 
 - Android, iOS, web, macOS, Windows, Linux. `Pick.directory` is not available on the web. The camera on desktop needs a custom `image_picker` delegate.
 - `Storage.download`: mobile, macOS and Windows call the handler (share sheet); Linux calls it too but gets the save dialog, since `share_plus` cannot share a file there; web triggers a browser download and ignores it. Without the plugin, mobile and desktop `download` throws `UnsupportedError` naming `magic_picker`.
-- `Pick.saveFile` answers a `Uri` whose scheme is `file` (desktop, iOS), `content` (Android) or `blob` (web).
+- `Pick.saveFile` answers a `Uri` whose scheme is `file` (desktop, iOS) or `content` (Android); on the web it answers `null` after a browser download.
 
 ## Rules for agents
 
@@ -43,7 +43,7 @@ Future<void> main() async {
 - Register `PickerServiceProvider` in the `providers` list; it is not auto-registered.
 - A `null` or empty result is a cancelled pick, not an error. File bytes load on demand through `readAsBytes`.
 - Give `Pick.camera` and `Pick.recordVideo` an `onError` or `fallbackToGallery`, or a refused permission rethrows.
-- Check `savedTo.scheme == 'file'` before `toFilePath()`; `content` and `blob` uris do not convert.
+- Check `savedTo.scheme == 'file'` before `toFilePath()`; a `content` uri does not convert, and the web answers `null`.
 - `await` `toXFile()` in code that also builds for the web.
 - `Pick.file` and `Pick.files` have no `withData`; call `readAsBytes`.
 - `MagicFile.size` can be `null` or `0` for a file that vanished after the pick; treat both as unknown when enforcing a limit.
