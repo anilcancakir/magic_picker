@@ -1,0 +1,65 @@
+# magic_picker
+
+> File and image picking for Magic apps: the `Pick` facade opens the gallery, camera, file dialog and save dialog and answers with a `MagicFile`, and `PickerServiceProvider` sets the download handler so `Storage.download` opens the share sheet on mobile and desktop.
+
+**Stack**: Flutter >=3.47.0 · Dart >=3.13.0 · Requires `magic` ^0.1.0 · Runtime deps: `magic`, `file_picker`, `image_picker`, `share_plus`; dowel runs the installer. No mocking library.
+
+**Setup**:
+
+```bash
+flutter pub add magic_picker
+dart run magic:dowel plugin:install magic_picker
+```
+
+```dart
+import 'package:magic_picker/magic_picker.dart';
+
+Future<void> main() async {
+  // PickerServiceProvider is registered in lib/config/app.dart by plugin:install.
+  final image = await Pick.image(maxWidth: 1024, imageQuality: 85);
+  if (image == null) return; // Cancelled.
+
+  await image.store('avatars/profile.jpg');
+}
+```
+
+## API
+
+- `Pick` (facade, all static): `image`, `media`, `video`, `camera`, `recordVideo`, `file` return `Future<MagicFile?>`; `images` and `files` return `Future<List<MagicFile>>` (empty on cancel); `directory` returns `Future<String?>`; `saveFile({fileName, bytes, mimeType, dialogTitle})` returns `Future<Uri?>`. `image`, `images`, `media` take `maxWidth`, `maxHeight`, `imageQuality`; `file` and `files` take `extensions` (no dot).
+- `Pick.camera` and `Pick.recordVideo` take `preferredCamera` (`CameraDevice`), `fallbackToGallery` and `onError`. With neither `onError` nor a fallback, a camera failure rethrows.
+- `PickerServiceProvider(app, {share})`: `boot()` sets `LocalAdapterContract.downloadHandler`, so `Storage.download` shares the file on mobile and desktop. `share` replaces the share sheet (for tests). Not auto-registered.
+- `XFile.toMagicFile()` (`Future<MagicFile>`, every platform) and `MagicFile.toXFile()`: `XFile` on IO, `Future<XFile>` on the web. It throws `UnsupportedError` with no path (IO) or no bytes (web).
+- The barrel re-exports `XFile` and `CameraDevice` from `image_picker`. `MagicFile` comes from `package:magic/magic.dart`.
+
+## Platforms
+
+- Android, iOS, web, macOS, Windows, Linux. `Pick.directory` is not available on the web. The camera on desktop needs a custom `image_picker` delegate.
+- `Storage.download`: mobile and desktop call the handler (share sheet); web triggers a browser download and ignores it. Without the plugin, mobile and desktop `download` throws `UnsupportedError` naming `magic_picker`.
+- `Pick.saveFile` answers a `Uri` whose scheme is `file` (desktop, iOS), `content` (Android) or `blob` (web).
+
+## Rules for agents
+
+- Import only `package:magic_picker/magic_picker.dart`; everything under `src/` is private.
+- Register `PickerServiceProvider` in the `providers` list; it is not auto-registered.
+- A `null` or empty result is a cancelled pick, not an error. File bytes load on demand through `readAsBytes`.
+- Give `Pick.camera` and `Pick.recordVideo` an `onError` or `fallbackToGallery`, or a refused permission rethrows.
+- Check `savedTo.scheme == 'file'` before `toFilePath()`; `content` and `blob` uris do not convert.
+- `await` `toXFile()` in code that also builds for the web.
+- `Pick.file` and `Pick.files` have no `withData`; call `readAsBytes`.
+- `MagicFile.size` can be `null` or `0` for a file that vanished after the pick; treat both as unknown when enforcing a limit.
+- In tests, set `LocalAdapterContract.downloadHandler = null` in `tearDown`: it is a static that `Magic.flush()` does not clear.
+
+## Docs
+
+- [Installation](https://anilcancakir.com/magic_picker/docs/getting-started/installation.md): install, requirements, the provider, a short check.
+- [Pick](https://anilcancakir.com/magic_picker/docs/basics/pick.md): every picker, camera fallback, saving, platform support, gotchas.
+- [XFile conversion](https://anilcancakir.com/magic_picker/docs/basics/xfile.md): `toMagicFile`, `toXFile`, IO versus web.
+- [Download](https://anilcancakir.com/magic_picker/docs/basics/download.md): the share-sheet handler and what happens without it.
+- [Testing](https://anilcancakir.com/magic_picker/docs/guides/testing.md): a recording share callback, resetting the static, faking the pickers.
+
+## Links
+
+- [README](https://github.com/anilcancakir/magic_picker/blob/master/README.md): install, `Pick`, download, the agent rules table.
+- [API reference](https://pub.dev/documentation/magic_picker/latest/): generated from the doc comments.
+- [Changelog](https://github.com/anilcancakir/magic_picker/blob/master/CHANGELOG.md): what changed in each version.
+- [Source](https://github.com/anilcancakir/magic_picker): issues and pull requests.

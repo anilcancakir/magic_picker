@@ -1,0 +1,24 @@
+# magic_picker install manifest (PluginInstaller DSL schema v1).
+#
+# Registers PickerServiceProvider and nothing else: Pick needs no config, and
+# the provider's only job is to route Storage.download on mobile and desktop to
+# the share sheet, so there is no config to publish and no config factory.
+
+plugin_name: magic_picker
+
+magic:
+  # Injects `import 'package:magic_picker/magic_picker.dart';` plus
+  # `(app) => PickerServiceProvider(app),` into the consumer's
+  # lib/config/app.dart providers list. Idempotent.
+  provider: PickerServiceProvider
+
+post_install:
+  message: |
+    Magic Picker installed. Next steps:
+
+    1. Run `flutter pub get`.
+
+    2. Add the platform permissions the pickers need: the photo library and
+       camera usage descriptions in ios/Runner/Info.plist (and
+       macos/Runner/Info.plist for desktop), and the file-access entitlements
+       on macOS.
