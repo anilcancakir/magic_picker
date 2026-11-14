@@ -31,7 +31,7 @@ The barrel is the only import; everything under `src/` is private. It also re-ex
 |:------------|:------|
 | Dart | `>=3.13.0` |
 | Flutter | `>=3.47.0` |
-| Magic | `^0.1.0`, installed and bootstrapped (`lib/config/app.dart` exists) |
+| Magic | `^1.0.0`, installed and bootstrapped (`lib/config/app.dart` exists) |
 | Dependencies | `file_picker`, `image_picker` and `share_plus`, pulled in automatically |
 
 <a name="register-the-provider"></a>
