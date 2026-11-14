@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="https://anilcancakir.com/magic_picker">Documentation</a> ·
+  <a href="https://anilcancakir.com/magic/docs/picker">Documentation</a> ·
   <a href="https://pub.dev/packages/magic_picker">pub.dev</a> ·
   <a href="https://github.com/anilcancakir/magic_picker/issues">Issues</a>
 </p>
@@ -115,7 +115,7 @@ Rules for an agent writing code against this package. Each one is a mistake that
 
 ## Links
 
-- [Documentation](https://anilcancakir.com/magic_picker/docs/getting-started/installation): installation, `Pick`, `XFile` conversion, download and testing
+- [Documentation](https://anilcancakir.com/magic/docs/picker/getting-started/installation): installation, `Pick`, `XFile` conversion, download and testing
 - [API reference](https://pub.dev/documentation/magic_picker/latest/)
 - [llms.txt](llms.txt) and the [agent skill](skills/magic-picker/SKILL.md) for AI coding agents: `npx skills add anilcancakir/magic_picker`
 - [Changelog](CHANGELOG.md)

@@ -51,11 +51,11 @@ Future<void> main() async {
 
 ## Docs
 
-- [Installation](https://anilcancakir.com/magic_picker/docs/getting-started/installation.md): install, requirements, the provider, a short check.
-- [Pick](https://anilcancakir.com/magic_picker/docs/basics/pick.md): every picker, camera fallback, saving, platform support, gotchas.
-- [XFile conversion](https://anilcancakir.com/magic_picker/docs/basics/xfile.md): `toMagicFile`, `toXFile`, IO versus web.
-- [Download](https://anilcancakir.com/magic_picker/docs/basics/download.md): the share-sheet handler and what happens without it.
-- [Testing](https://anilcancakir.com/magic_picker/docs/guides/testing.md): a recording share callback, resetting the static, faking the pickers.
+- [Installation](https://anilcancakir.com/magic/docs/picker/getting-started/installation.md): install, requirements, the provider, a short check.
+- [Pick](https://anilcancakir.com/magic/docs/picker/basics/pick.md): every picker, camera fallback, saving, platform support, gotchas.
+- [XFile conversion](https://anilcancakir.com/magic/docs/picker/basics/xfile.md): `toMagicFile`, `toXFile`, IO versus web.
+- [Download](https://anilcancakir.com/magic/docs/picker/basics/download.md): the share-sheet handler and what happens without it.
+- [Testing](https://anilcancakir.com/magic/docs/picker/guides/testing.md): a recording share callback, resetting the static, faking the pickers.
 
 ## Links
 
