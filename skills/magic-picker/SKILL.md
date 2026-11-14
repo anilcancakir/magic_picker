@@ -22,7 +22,7 @@ Requires Dart >=3.13, Flutter >=3.47 and `magic` ^1.0.0. The installer registers
 
 ## Pick rules
 
-1. Treat `null` (and an empty list from `images` and `files`) as a cancelled pick and return early. Cancelling is not an error. The exception is `Pick.saveFile`: on the web it answers `null` after the browser has downloaded the file, which is a success.
+1. Treat `null` (and an empty list from `images` and `files`) as a cancelled pick and return early. Cancelling is not an error. The exception is `Pick.saveFile`: on the web it answers `null` once the browser was asked to download, which says nothing about whether the user saved or cancelled, so do not treat it as cancellation or as a confirmed save.
 2. Give `Pick.camera` and `Pick.recordVideo` an `onError`, `fallbackToGallery: true`, or both. With neither, a refused camera permission rethrows. With `onError` alone the call answers `null`.
 3. Pass `extensions` without the dot (`['pdf']`). Do not pass `withData` to `Pick.file` or `Pick.files`; it no longer exists. Bytes load on demand through `readAsBytes`.
 4. `Pick.directory` returns a path `String?` and is not available on the web.

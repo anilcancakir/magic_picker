@@ -41,7 +41,7 @@ Future<void> main() async {
 
 - Import only `package:magic_picker/magic_picker.dart`; everything under `src/` is private.
 - Register `PickerServiceProvider` in the `providers` list; it is not auto-registered.
-- A `null` or empty result is a cancelled pick, not an error; `Pick.saveFile` on the web is the exception, since it answers `null` after a browser download. File bytes load on demand through `readAsBytes`.
+- A `null` or empty result is a cancelled pick, not an error; `Pick.saveFile` on the web is the exception: it answers `null` once the browser was asked to download, which cannot tell a finished save from a cancelled prompt. File bytes load on demand through `readAsBytes`.
 - Give `Pick.camera` and `Pick.recordVideo` an `onError` or `fallbackToGallery`, or a refused permission rethrows.
 - Check `savedTo.scheme == 'file'` before `toFilePath()`; the Android answer has no scheme and is not a path you can open, and the web answers `null`.
 - `await` `toXFile()` in code that also builds for the web.
