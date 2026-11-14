@@ -85,6 +85,34 @@ void main() {
       expect(magicFile.size, 600);
       expect(magicFile.mimeType, 'image/png');
     });
+
+    test(
+      'derives the mime type from the name when the XFile has none',
+      () async {
+        // image_picker answers a null mimeType for every Android and iOS pick,
+        // so an upload sent no content type.
+        final magicFile = await XFile(testFile.path).toMagicFile();
+
+        expect(magicFile.mimeType, 'image/jpeg');
+      },
+    );
+
+    test('keeps the mime type the XFile reports over the name', () async {
+      final magicFile = await XFile(
+        testFile.path,
+        mimeType: 'image/png',
+      ).toMagicFile();
+
+      expect(magicFile.mimeType, 'image/png');
+    });
+
+    test('leaves the mime type null for an unknown extension', () async {
+      final unknown = File('${tempDir.path}/data.xyz')..writeAsBytesSync([1]);
+
+      final magicFile = await XFile(unknown.path).toMagicFile();
+
+      expect(magicFile.mimeType, isNull);
+    });
   });
 
   test('round-trip: XFile -> MagicFile -> XFile', () async {

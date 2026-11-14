@@ -400,22 +400,252 @@ void main() {
       },
     );
   });
+
+  group('Pick source routing', () {
+    late ImagePickerPlatform original;
+    late _FakeImagePicker picker;
+
+    setUp(() {
+      original = ImagePickerPlatform.instance;
+      picker = _FakeImagePicker(XFile.fromData(Uint8List(1), name: 'a.png'));
+      ImagePickerPlatform.instance = picker;
+    });
+    tearDown(() => ImagePickerPlatform.instance = original);
+
+    test('image and video pick from the gallery', () async {
+      await Pick.image();
+      await Pick.video();
+
+      expect(picker.sources, [ImageSource.gallery, ImageSource.gallery]);
+    });
+
+    test('camera and recordVideo pick from the camera', () async {
+      await Pick.camera();
+      await Pick.recordVideo();
+
+      expect(picker.sources, [ImageSource.camera, ImageSource.camera]);
+    });
+  });
+
+  group('Pick.camera failure handling', () {
+    late ImagePickerPlatform original;
+    late List<Object> reported;
+
+    final XFile photo = XFile.fromData(Uint8List(1), name: 'a.png');
+    final StateError denied = StateError('camera denied');
+
+    setUp(() {
+      original = ImagePickerPlatform.instance;
+      reported = <Object>[];
+    });
+    tearDown(() => ImagePickerPlatform.instance = original);
+
+    _FakeImagePicker install(_FakeImagePicker picker) {
+      ImagePickerPlatform.instance = picker;
+
+      return picker;
+    }
+
+    test('rethrows without onError and without a fallback', () async {
+      final picker = install(
+        _FakeImagePicker(photo, errors: {ImageSource.camera: denied}),
+      );
+
+      await expectLater(Pick.camera(), throwsA(same(denied)));
+      expect(picker.sources, [ImageSource.camera]);
+    });
+
+    test('reports to onError and answers null without a fallback', () async {
+      final picker = install(
+        _FakeImagePicker(photo, errors: {ImageSource.camera: denied}),
+      );
+
+      final MagicFile? file = await Pick.camera(onError: reported.add);
+
+      expect(file, isNull);
+      expect(reported, [same(denied)]);
+      expect(picker.sources, [ImageSource.camera]);
+    });
+
+    test('opens the gallery with a fallback and no onError', () async {
+      final picker = install(
+        _FakeImagePicker(photo, errors: {ImageSource.camera: denied}),
+      );
+
+      final MagicFile? file = await Pick.camera(fallbackToGallery: true);
+
+      expect(file?.size, 1);
+      expect(picker.sources, [ImageSource.camera, ImageSource.gallery]);
+    });
+
+    test('reports to onError, then opens the gallery', () async {
+      final picker = install(
+        _FakeImagePicker(photo, errors: {ImageSource.camera: denied}),
+      );
+
+      final MagicFile? file = await Pick.camera(
+        fallbackToGallery: true,
+        onError: reported.add,
+      );
+
+      expect(file?.size, 1);
+      expect(reported, [same(denied)]);
+      expect(picker.sources, [ImageSource.camera, ImageSource.gallery]);
+    });
+
+    test('opens the gallery when the camera is closed with no photo', () async {
+      final picker = install(
+        _FakeImagePicker(photo, cancelled: {ImageSource.camera}),
+      );
+
+      final MagicFile? file = await Pick.camera(fallbackToGallery: true);
+
+      expect(file?.size, 1);
+      expect(picker.sources, [ImageSource.camera, ImageSource.gallery]);
+    });
+
+    test(
+      'answers null without opening the gallery when not asked to',
+      () async {
+        final picker = install(
+          _FakeImagePicker(photo, cancelled: {ImageSource.camera}),
+        );
+
+        expect(await Pick.camera(), isNull);
+        expect(picker.sources, [ImageSource.camera]);
+      },
+    );
+
+    test(
+      'a gallery failure after a closed camera still reaches onError',
+      () async {
+        // The fallback is awaited inside the try block; returned bare, its
+        // failure would escape the catch and onError would never fire.
+        final StateError galleryDenied = StateError('gallery denied');
+        install(
+          _FakeImagePicker(
+            photo,
+            cancelled: {ImageSource.camera},
+            errors: {ImageSource.gallery: galleryDenied},
+          ),
+        );
+
+        // The catch retries the gallery, which fails again, so the call still
+        // throws; what the `await` decides is whether onError ran first.
+        await expectLater(
+          Pick.camera(fallbackToGallery: true, onError: reported.add),
+          throwsA(same(galleryDenied)),
+        );
+        expect(reported.first, same(galleryDenied));
+      },
+    );
+  });
+
+  group('Pick.recordVideo failure handling', () {
+    late ImagePickerPlatform original;
+    late List<Object> reported;
+
+    final XFile clip = XFile.fromData(Uint8List(1), name: 'clip.mp4');
+    final StateError denied = StateError('camera denied');
+
+    setUp(() {
+      original = ImagePickerPlatform.instance;
+      reported = <Object>[];
+    });
+    tearDown(() => ImagePickerPlatform.instance = original);
+
+    _FakeImagePicker install(_FakeImagePicker picker) {
+      ImagePickerPlatform.instance = picker;
+
+      return picker;
+    }
+
+    test('rethrows without onError and without a fallback', () async {
+      install(_FakeImagePicker(clip, errors: {ImageSource.camera: denied}));
+
+      await expectLater(Pick.recordVideo(), throwsA(same(denied)));
+    });
+
+    test('reports to onError and answers null without a fallback', () async {
+      install(_FakeImagePicker(clip, errors: {ImageSource.camera: denied}));
+
+      final MagicFile? file = await Pick.recordVideo(onError: reported.add);
+
+      expect(file, isNull);
+      expect(reported, [same(denied)]);
+    });
+
+    test('reports to onError, then opens the gallery', () async {
+      final picker = install(
+        _FakeImagePicker(clip, errors: {ImageSource.camera: denied}),
+      );
+
+      final MagicFile? file = await Pick.recordVideo(
+        fallbackToGallery: true,
+        onError: reported.add,
+      );
+
+      expect(file?.size, 1);
+      expect(reported, [same(denied)]);
+      expect(picker.sources, [ImageSource.camera, ImageSource.gallery]);
+    });
+
+    test(
+      'a gallery failure after a closed camera still reaches onError',
+      () async {
+        final StateError galleryDenied = StateError('gallery denied');
+        install(
+          _FakeImagePicker(
+            clip,
+            cancelled: {ImageSource.camera},
+            errors: {ImageSource.gallery: galleryDenied},
+          ),
+        );
+
+        await expectLater(
+          Pick.recordVideo(fallbackToGallery: true, onError: reported.add),
+          throwsA(same(galleryDenied)),
+        );
+        expect(reported.first, same(galleryDenied));
+      },
+    );
+  });
 }
 
-/// Answers every image pick with [file].
+/// Answers every image and video pick with [file], and records the
+/// [ImageSource] each one asked for in [sources].
+///
+/// A source listed in [errors] throws that error instead, and one listed in
+/// [cancelled] answers `null` as a user who closes the picker does.
 ///
 /// Extending the platform class passes its verification token, so no mock
 /// mixin is needed to install it as [ImagePickerPlatform.instance].
 class _FakeImagePicker extends ImagePickerPlatform {
-  _FakeImagePicker(this.file);
+  _FakeImagePicker(
+    this.file, {
+    this.errors = const <ImageSource, Object>{},
+    this.cancelled = const <ImageSource>{},
+  });
 
   final XFile file;
+  final Map<ImageSource, Object> errors;
+  final Set<ImageSource> cancelled;
+  final List<ImageSource> sources = <ImageSource>[];
+
+  XFile? _answer(ImageSource source) {
+    sources.add(source);
+
+    final Object? error = errors[source];
+    if (error != null) throw error;
+
+    return cancelled.contains(source) ? null : file;
+  }
 
   @override
   Future<XFile?> getImageFromSource({
     required ImageSource source,
     ImagePickerOptions options = const ImagePickerOptions(),
-  }) async => file;
+  }) async => _answer(source);
 
   @override
   Future<List<XFile>> getMultiImageWithOptions({
@@ -430,5 +660,5 @@ class _FakeImagePicker extends ImagePickerPlatform {
     required ImageSource source,
     CameraDevice preferredCameraDevice = CameraDevice.rear,
     Duration? maxDuration,
-  }) async => file;
+  }) async => _answer(source);
 }

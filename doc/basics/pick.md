@@ -164,9 +164,9 @@ Call `toFilePath()` only after checking for `file`. The MIME type comes from the
 
 | Member | Meaning |
 |:-------|:--------|
-| `name`, `extension`, `mimeType` | The file name, its extension without the dot, and a MIME type derived from the name (`null` when the extension is unknown). |
+| `name`, `extension`, `mimeType` | The file name, its extension without the dot, and a MIME type: the one the picker reports, else one derived from the name (`null` when the extension is unknown). |
 | `size` | Bytes, filled for every pick. Treat `null` and `0` as unknown when you enforce an upload limit. |
-| `path` | The file path on mobile and desktop; `null` on the web. |
+| `path` | The file path on mobile and desktop. On the web an image, video or media pick answers a `blob:` URL; a `Pick.file` or `Pick.files` pick answers `null`. |
 | `isImage`, `isVideo` | Derived from the extension. |
 | `readAsBytes()` | The bytes, read once and cached. |
 | `store(path, {disk})`, `storeAs(directory, {disk})` | Write to `Storage`; `storeAs` generates a unique name. |
@@ -203,7 +203,7 @@ Each platform's permission setup (photo library and camera usage descriptions on
 |:--------|:----|
 | Treating `null` as a failure | `null` is a cancelled pick. Return early. |
 | Calling `Pick.camera` with no `onError` and no fallback | A refused permission rethrows. Pass one of the two. |
-| Reading `path` on the web | It is `null` there; use `readAsBytes` or `store`. |
+| Reading `path` on the web | It is a `blob:` URL for an image pick and `null` for a `Pick.file` pick, and neither is a file path; use `readAsBytes` or `store`. |
 | Trusting `size` as a limit | It can be `null` or `0` when the file vanished after the pick. Check the stored size too. |
 | Calling `savedTo.toFilePath()` without checking the scheme | Only `file` uris convert; `content` and `blob` throw. |
 | Passing `withData` to `Pick.file` or `Pick.files` | The parameter no longer exists. Read bytes with `readAsBytes`. |

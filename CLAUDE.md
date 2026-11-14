@@ -2,7 +2,7 @@
 
 # Magic Picker Plugin
 
-File and image picking for the Magic Framework: the `Pick` facade (gallery, camera, files, directory, save dialog, all answering `MagicFile`), `PickerServiceProvider` (sets `LocalAdapterContract.downloadHandler` so `Storage.download` shares on mobile and desktop) and the `toMagicFile` / `toXFile` extensions.
+File and image picking for the Magic Framework: the `Pick` facade (gallery, camera, files, directory, save dialog, all answering `MagicFile`), `PickerServiceProvider` (sets `LocalAdapterContract.downloadHandler` so `Storage.download` shares on mobile, macOS and Windows and opens the save dialog on Linux) and the `toMagicFile` / `toXFile` extensions.
 
 **Version:** 1.0.0 · **Dart:** >=3.13.0 · **Flutter:** >=3.47.0 · **Requires:** `magic` ^1.0.0
 
@@ -24,8 +24,8 @@ lib/
 ├── cli.dart                     # Flutter-free barrel: the dowel provider only
 └── src/
     ├── facades/pick.dart        # Pick: image_picker and file_picker behind MagicFile
-    ├── picker_service_provider.dart  # Sets the download handler in boot(); `share` seam for tests
-    ├── storage/                 # magic_file_xfile.dart (toMagicFile) plus _io / _web toXFile
+    ├── picker_service_provider.dart  # Sets the download handler in boot(); `share` seam for tests; Linux saves instead
+    ├── storage/                 # magic_file_xfile.dart (toMagicFile) plus _io / _web toXFile; mime_types.dart (shared table)
     └── cli/                     # MagicPickerDowelProvider (no commands; plugin:install needs it)
 
 install.yaml                     # Registers the provider; no config, no stub
@@ -64,6 +64,8 @@ Every feature, fix, or refactor goes through red-green-refactor: write a failing
 | Re-adding `withData` to `Pick.file` or `Pick.files` | `file_picker` 12 stopped forwarding it; bytes load lazily through `MagicFile.readAsBytes` |
 | Reading `PlatformFile.lengthSync()` for the size | It is `null` for every Windows and Linux pick; `length()` measures the file |
 | Dropping the `await` on the gallery fallback inside `Pick.camera` or `Pick.recordVideo` | A failure there escapes the `catch` and `onError` never fires; keep `return await` |
+| Sharing a file through `share_plus` on Linux | It throws `UnimplementedError` for any file there; the handler routes Linux through `Pick.saveFile` with the file's bytes. Windows before 10 build 17763 has the same limit and is not detected |
+| Trusting `XFile.mimeType` in `toMagicFile` | `image_picker` leaves it null on Android and iOS; `toMagicFile` falls back to `mimeTypeForFileName`, the table `Pick.file` uses. Add new types in `mime_types.dart` only |
 | Giving `toXFile` one type on both platforms | The web has no path to wrap and has to read bytes, so it is a `Future` there by design |
 | Importing Flutter or the runtime barrel from `lib/src/cli/` | The dowel dispatcher is a pure Dart process; the CLI tree imports `dart:` libraries and the dowel barrel only |
 | Documenting Info.plist or manifest setup as the plugin's job | It is the app's; `install.yaml` only reminds the user in its post-install message |

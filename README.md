@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Pick a file, an image or a video and get a <code>MagicFile</code> back.</strong><br/>
-  The <code>Pick</code> facade for Magic apps opens the gallery, camera, file dialog and save dialog on every platform, and <code>PickerServiceProvider</code> lets <code>Storage.download</code> open the share sheet on mobile and desktop.
+  The <code>Pick</code> facade for Magic apps opens the gallery, camera, file dialog and save dialog on every platform, and <code>PickerServiceProvider</code> lets <code>Storage.download</code> open the share sheet on mobile, macOS and Windows and the save dialog on Linux.
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@
 | Entry points | `Pick` (facade), `PickerServiceProvider` (wiring, download handler), `XFile.toMagicFile()` and `MagicFile.toXFile()` (extensions); re-exports `XFile` and `CameraDevice` |
 | Platforms | Android, iOS, web, macOS, Windows and Linux. The camera on desktop needs a custom `image_picker` delegate; `Pick.directory` is not available on the web. |
 | Requires | Dart >=3.13, Flutter >=3.47, `magic` ^1.0.0 |
-| Dependencies | `magic`, `file_picker`, `image_picker`, `share_plus`; dowel runs the installer |
+| Dependencies | `magic`, `dowel` (runs the installer), `file_picker`, `image_picker`, `share_plus` |
 | License | MIT |
 
 ## Install
@@ -85,7 +85,8 @@ Future<void> main() async {
 
 | Platform | What happens |
 |----------|--------------|
-| Mobile and desktop | `PickerServiceProvider.boot()` sets `LocalAdapterContract.downloadHandler`; the file opens in the share sheet. |
+| Android, iOS, macOS and Windows | `PickerServiceProvider.boot()` sets `LocalAdapterContract.downloadHandler`; the file opens in the share sheet. |
+| Linux | The same handler opens the save dialog with the file's bytes, because `share_plus` cannot share a file on Linux. |
 | Web | A browser download. The handler is ignored. |
 | Mobile or desktop without the plugin | `download` throws `UnsupportedError`, naming `magic_picker`. |
 

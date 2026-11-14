@@ -1,6 +1,6 @@
 # magic_picker
 
-> File and image picking for Magic apps: the `Pick` facade opens the gallery, camera, file dialog and save dialog and answers with a `MagicFile`, and `PickerServiceProvider` sets the download handler so `Storage.download` opens the share sheet on mobile and desktop.
+> File and image picking for Magic apps: the `Pick` facade opens the gallery, camera, file dialog and save dialog and answers with a `MagicFile`, and `PickerServiceProvider` sets the download handler so `Storage.download` opens the share sheet on mobile, macOS and Windows and the save dialog on Linux.
 
 **Stack**: Flutter >=3.47.0 · Dart >=3.13.0 · Requires `magic` ^1.0.0 · Runtime deps: `magic`, `file_picker`, `image_picker`, `share_plus`; dowel runs the installer. No mocking library.
 
@@ -27,14 +27,14 @@ Future<void> main() async {
 
 - `Pick` (facade, all static): `image`, `media`, `video`, `camera`, `recordVideo`, `file` return `Future<MagicFile?>`; `images` and `files` return `Future<List<MagicFile>>` (empty on cancel); `directory` returns `Future<String?>`; `saveFile({fileName, bytes, mimeType, dialogTitle})` returns `Future<Uri?>`. `image`, `images`, `media` take `maxWidth`, `maxHeight`, `imageQuality`; `file` and `files` take `extensions` (no dot).
 - `Pick.camera` and `Pick.recordVideo` take `preferredCamera` (`CameraDevice`), `fallbackToGallery` and `onError`. With neither `onError` nor a fallback, a camera failure rethrows.
-- `PickerServiceProvider(app, {share})`: `boot()` sets `LocalAdapterContract.downloadHandler`, so `Storage.download` shares the file on mobile and desktop. `share` replaces the share sheet (for tests). Not auto-registered.
+- `PickerServiceProvider(app, {share})`: `boot()` sets `LocalAdapterContract.downloadHandler`, so `Storage.download` shares the file on mobile, macOS and Windows, and opens the save dialog on Linux. `share` replaces the share sheet (for tests). Not auto-registered.
 - `XFile.toMagicFile()` (`Future<MagicFile>`, every platform) and `MagicFile.toXFile()`: `XFile` on IO, `Future<XFile>` on the web. It throws `UnsupportedError` with no path (IO) or no bytes (web).
 - The barrel re-exports `XFile` and `CameraDevice` from `image_picker`. `MagicFile` comes from `package:magic/magic.dart`.
 
 ## Platforms
 
 - Android, iOS, web, macOS, Windows, Linux. `Pick.directory` is not available on the web. The camera on desktop needs a custom `image_picker` delegate.
-- `Storage.download`: mobile and desktop call the handler (share sheet); web triggers a browser download and ignores it. Without the plugin, mobile and desktop `download` throws `UnsupportedError` naming `magic_picker`.
+- `Storage.download`: mobile, macOS and Windows call the handler (share sheet); Linux calls it too but gets the save dialog, since `share_plus` cannot share a file there; web triggers a browser download and ignores it. Without the plugin, mobile and desktop `download` throws `UnsupportedError` naming `magic_picker`.
 - `Pick.saveFile` answers a `Uri` whose scheme is `file` (desktop, iOS), `content` (Android) or `blob` (web).
 
 ## Rules for agents
