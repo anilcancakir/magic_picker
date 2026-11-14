@@ -1,6 +1,6 @@
 name: magic_picker
 description: "File and image picking for Magic apps (the Pick facade) plus the share-sheet download handler."
-version: 0.0.1
+version: 1.0.0
 homepage: https://anilcancakir.com/magic_picker
 repository: https://github.com/anilcancakir/magic_picker
 issue_tracker: https://github.com/anilcancakir/magic_picker/issues
@@ -18,8 +18,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  magic: ^0.1.0
-  dowel: ^0.0.21
+  magic: ^1.0.0
+  dowel: ^1.0.0
   file_picker: ^13.3.3
   image_picker: ^1.2.4
   share_plus: ^13.3.1

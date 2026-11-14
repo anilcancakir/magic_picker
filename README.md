@@ -32,7 +32,7 @@
 | Import | `package:magic_picker/magic_picker.dart` |
 | Entry points | `Pick` (facade), `PickerServiceProvider` (wiring, download handler), `XFile.toMagicFile()` and `MagicFile.toXFile()` (extensions); re-exports `XFile` and `CameraDevice` |
 | Platforms | Android, iOS, web, macOS, Windows and Linux. The camera on desktop needs a custom `image_picker` delegate; `Pick.directory` is not available on the web. |
-| Requires | Dart >=3.13, Flutter >=3.47, `magic` ^0.1.0 |
+| Requires | Dart >=3.13, Flutter >=3.47, `magic` ^1.0.0 |
 | Dependencies | `magic`, `file_picker`, `image_picker`, `share_plus`; dowel runs the installer |
 | License | MIT |
 

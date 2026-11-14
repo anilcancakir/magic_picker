@@ -1,7 +1,7 @@
 ---
 name: magic-picker
 description: "Pick files, images and videos in a Magic app with the Pick facade, and share downloads through magic_picker's PickerServiceProvider."
-version: 0.0.1
+version: 1.0.0
 when_to_use: "Use when code imports package:magic_picker or touches Pick, PickerServiceProvider, toMagicFile, toXFile or Storage.download on mobile or desktop in a Magic app."
 ---
 
@@ -18,7 +18,7 @@ flutter pub add magic_picker
 dart run magic:dowel plugin:install magic_picker
 ```
 
-Requires Dart >=3.13, Flutter >=3.47 and `magic` ^0.1.0. The installer registers `PickerServiceProvider` in `lib/config/app.dart` and publishes no config. Import only the barrel, `package:magic_picker/magic_picker.dart`, which also exports `XFile` and `CameraDevice`. The app owns the platform permissions: the photo library and camera usage descriptions in `Info.plist` and the file-access entitlements on macOS.
+Requires Dart >=3.13, Flutter >=3.47 and `magic` ^1.0.0. The installer registers `PickerServiceProvider` in `lib/config/app.dart` and publishes no config. Import only the barrel, `package:magic_picker/magic_picker.dart`, which also exports `XFile` and `CameraDevice`. The app owns the platform permissions: the photo library and camera usage descriptions in `Info.plist` and the file-access entitlements on macOS.
 
 ## Pick rules
 
