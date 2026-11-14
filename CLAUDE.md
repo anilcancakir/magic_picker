@@ -4,7 +4,7 @@
 
 File and image picking for the Magic Framework: the `Pick` facade (gallery, camera, files, directory, save dialog, all answering `MagicFile`), `PickerServiceProvider` (sets `LocalAdapterContract.downloadHandler` so `Storage.download` shares on mobile, macOS and Windows and opens the save dialog on Linux) and the `toMagicFile` / `toXFile` extensions.
 
-**Version:** 1.0.0 · **Dart:** >=3.13.0 · **Flutter:** >=3.47.0 · **Requires:** `magic` ^1.0.0
+**Version:** 1.0.1 · **Dart:** >=3.13.0 · **Flutter:** >=3.47.0 · **Requires:** `magic` ^1.0.0
 
 ## Commands
 
@@ -37,7 +37,7 @@ tool/check-docs.py               # Offline docs gate, run by docs-link-check.yml
 
 ## Post-Change Checklist
 
-After ANY source code change, sync **before committing**. A change is not done while one of these is stale:
+After any source code change, sync **before committing**. A change is not done while one of these is stale:
 
 1. **`CHANGELOG.md`**: Add entry under `[Unreleased]` section
 2. **`README.md`, `llms.txt` and the `doc/` pages**: Update if features, API, or usage changes
@@ -69,7 +69,7 @@ Every feature, fix, or refactor goes through red-green-refactor: write a failing
 | Giving `toXFile` one type on both platforms | The web has no path to wrap and has to read bytes, so it is a `Future` there by design |
 | Importing Flutter or the runtime barrel from `lib/src/cli/` | The dowel dispatcher is a pure Dart process; the CLI tree imports `dart:` libraries and the dowel barrel only |
 | Documenting Info.plist or manifest setup as the plugin's job | It is the app's; `install.yaml` only reminds the user in its post-install message |
-| Relative paths in `pubspec_overrides.yaml` | Use ABSOLUTE ones; the file is never committed |
+| Relative paths in `pubspec_overrides.yaml` | Use absolute ones; the file is never committed |
 
 ## Release
 
