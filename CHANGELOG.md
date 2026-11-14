@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-15
+
 ### Changed
 
 - `Storage.download` on Linux opens the save dialog with the file's bytes instead of a share sheet, because `share_plus` cannot share a file there.

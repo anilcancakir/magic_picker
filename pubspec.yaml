@@ -1,6 +1,6 @@
 name: magic_picker
 description: "File and image picking for Magic apps (the Pick facade) plus the share-sheet download handler."
-version: 1.0.0
+version: 1.0.1
 homepage: https://anilcancakir.com/magic_picker
 repository: https://github.com/anilcancakir/magic_picker
 issue_tracker: https://github.com/anilcancakir/magic_picker/issues
