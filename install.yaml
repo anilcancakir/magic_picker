@@ -1,8 +1,8 @@
 # magic_picker install manifest (PluginInstaller DSL schema v1).
 #
 # Registers PickerServiceProvider and nothing else: Pick needs no config, and
-# the provider's only job is to route Storage.download on mobile and desktop to
-# the share sheet, so there is no config to publish and no config factory.
+# the provider's only job is to route Storage.download to the share sheet (the
+# save dialog on Linux), so there is no config to publish and no config factory.
 
 plugin_name: magic_picker
 

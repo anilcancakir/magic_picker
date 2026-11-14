@@ -48,9 +48,12 @@ class PickerServiceProvider extends ServiceProvider {
   }
 
   /// `share_plus` has no file sharing on Linux, so the user picks where the
-  /// file goes. Closing the dialog is a cancelled download, not an error.
+  /// file goes. Closing the dialog is a cancelled download, not an error. The
+  /// whole file is read into memory first, because the Linux dialog writes the
+  /// bytes it is given.
   static Future<void> _saveThroughDialog(String fullPath, String name) async {
     await Pick.saveFile(
+      dialogTitle: name,
       fileName: name,
       bytes: await XFile(fullPath).readAsBytes(),
     );
