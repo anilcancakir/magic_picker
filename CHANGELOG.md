@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-- The package page and every documentation link name the new location under `https://anilcancakir.com/magic/picker` (the pub.dev page carries it from the next release).
+- The package page is `https://anilcancakir.com/magic/picker` and the documentation links sit under `https://anilcancakir.com/magic/docs/picker` (the pub.dev page carries it from the next release).
 - `Storage.download` on Linux opens the save dialog with the file's bytes instead of a share sheet, because `share_plus` cannot share a file there.
 
 ### Fixed
