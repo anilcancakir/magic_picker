@@ -67,7 +67,7 @@ Future<void> main() async {
 | `Pick.camera`, `Pick.recordVideo` | `Future<MagicFile?>` | A photo or a recording; `fallbackToGallery` and `onError` handle a refused permission. |
 | `Pick.file`, `Pick.files` | `Future<MagicFile?>`, `Future<List<MagicFile>>` | One or several files, optionally filtered by `extensions`. |
 | `Pick.directory` | `Future<String?>` | A directory path; not on the web. |
-| `Pick.saveFile` | `Future<Uri?>` | Writes bytes through the save dialog; the `Uri` scheme is `file`, `content` or `blob` by platform. |
+| `Pick.saveFile` | `Future<Uri?>` | Writes bytes through the save dialog; the `Uri` is a `file` uri on desktop and iOS, and on Android only the path part of the document uri, with no scheme; on the web it answers `null` after a browser download. |
 
 A cancelled pick answers `null` (a list: empty), never an error. File contents are read on demand, not at pick time.
 
@@ -92,6 +92,21 @@ Future<void> main() async {
 
 ## XFile
 
+Convert a picked `XFile` to a `MagicFile` and back.
+
+```dart
+import 'package:magic/magic.dart';
+import 'package:magic_picker/magic_picker.dart';
+
+Future<void> roundTrip(XFile picked) async {
+  final MagicFile file = await picked.toMagicFile();
+  print('${file.name}: ${file.size} bytes');
+
+  final XFile xFile = await Future.value(file.toXFile());
+  print(xFile.name);
+}
+```
+
 `toMagicFile()` is a `Future` everywhere. `toXFile()` is synchronous on mobile and desktop, where it wraps the path, and a `Future` on the web, where it reads the bytes first. It throws `UnsupportedError` for a file with no path (IO) or no bytes (web).
 
 ## For AI coding agents
@@ -102,9 +117,9 @@ Rules for an agent writing code against this package. Each one is a mistake that
 |----|---------|
 | Import only `package:magic_picker/magic_picker.dart` | Everything under `src/` is private; the barrel also exports `XFile` and `CameraDevice`. |
 | Register `PickerServiceProvider` in `lib/config/app.dart` | It is not auto-registered, and without it `Storage.download` throws on mobile and desktop. |
-| Treat a `null` or empty result as a cancelled pick | Cancelling is not an error. |
+| Treat a `null` or empty result as a cancelled pick | Cancelling is not an error. `Pick.saveFile` on the web is the exception: `null` there is the normal answer once the browser was asked to download, and it cannot tell a finished save from a cancelled save prompt. |
 | Pass `onError` or `fallbackToGallery` to `Pick.camera` and `Pick.recordVideo` | Otherwise a refused camera permission rethrows. |
-| Read `savedTo.scheme` before `toFilePath()` on a `Pick.saveFile` result | Only `file` uris convert; Android answers `content` and the web `blob`. |
+| Read `savedTo.scheme` before `toFilePath()` on a `Pick.saveFile` result | Only `file` uris are paths you can open; Android answers the document uri's path part with no scheme, and the web answers `null` after a browser download. |
 | `await` `toXFile()` in code that also builds for the web | It is a `Future` there and synchronous elsewhere. |
 | Do not pass `withData` to `Pick.file` or `Pick.files` | The parameter no longer exists; call `readAsBytes` on the result. |
 | In a test, reset `LocalAdapterContract.downloadHandler` to `null` in `tearDown` | It is a static that `Magic.flush()` does not clear. |

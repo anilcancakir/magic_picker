@@ -38,7 +38,7 @@ The `name` argument is the file name offered to the user. Without it the file's 
 
 `LocalAdapterContract.downloadHandler` is a static `Future<void> Function(String fullPath, String name)?` in core. `PickerServiceProvider.boot()` assigns it, so the share sheet is wired after `Magic.init` has booted the providers. The handler shares the stored file through `share_plus` and passes `name` as the file name override, because `XFile` ignores its `name` on IO and would otherwise offer the path's base name. On Linux `share_plus` throws `UnimplementedError` for any file, so the handler reads the file and passes `name` and the bytes to `Pick.saveFile`, which opens the save dialog.
 
-Windows older than 10 version 1809 (build 17763) falls back to a `share_plus` implementation that cannot share files either, and `download` throws there. The provider does not detect it.
+On Windows older than 10 version 1809 (build 17763), `share_plus` falls back to an implementation that throws `UnimplementedError` for any file, so `download` throws there. The provider does not detect it.
 
 `PickerServiceProvider` takes an optional `share` callback that replaces the share sheet. It exists for tests, where there is no platform channel to answer; see [Testing](../guides/testing.md).
 
