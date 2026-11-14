@@ -344,10 +344,11 @@ class Pick {
   /// Open a save file dialog.
   ///
   /// Returns the [Uri] the file was written to, or null if cancelled. The
-  /// scheme is platform-dependent: `file` on desktop and iOS, `content` on
-  /// Android SAF. The web downloads the file through the browser and always
-  /// returns null. Read [Uri.toFilePath] only after checking for a `file`
-  /// scheme.
+  /// scheme is platform-dependent: `file` on desktop and iOS; on Android the
+  /// plugin answers only the path part of the Storage Access Framework
+  /// document uri, so the [Uri] has no scheme and is not a path you can open.
+  /// The web downloads the file through the browser and always returns null.
+  /// Read [Uri.toFilePath] only after checking for a `file` scheme.
   ///
   /// **Parameters:**
   /// - [fileName]: File name to save as, extension included.

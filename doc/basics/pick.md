@@ -152,7 +152,7 @@ Future<void> save(Uint8List pdfBytes) async {
 | Platform | Scheme |
 |:---------|:-------|
 | Desktop and iOS | `file` |
-| Android | `content` (Storage Access Framework) |
+| Android | None: the answer is the path part of the Storage Access Framework document uri, not a path you can open |
 | Web | None: the answer is always `null`, because the browser reports no location |
 
 Call `toFilePath()` only after checking for `file`. The MIME type comes from the extension of `fileName` (`report.pdf` becomes `application/pdf`) and falls back to `application/octet-stream`. Pass `mimeType` when the extension does not describe the content: Android and the browser both use it to choose the app that opens the file.
@@ -205,7 +205,7 @@ Each platform's permission setup (photo library and camera usage descriptions on
 | Calling `Pick.camera` with no `onError` and no fallback | A refused permission rethrows. Pass one of the two. |
 | Reading `path` on the web | It is a `blob:` URL for an image pick and `null` for a `Pick.file` pick, and neither is a file path; use `readAsBytes` or `store`. |
 | Trusting `size` as a limit | It can be `null` or `0` when the file vanished after the pick. Check the stored size too. |
-| Calling `savedTo.toFilePath()` without checking the scheme | Only `file` uris convert; a `content` uri throws. |
+| Calling `savedTo.toFilePath()` without checking the scheme | Only a `file` uri is a path you can open; the Android answer has no scheme, so it converts to a string that is not a real file path, and the web answers `null`. |
 | Passing `withData` to `Pick.file` or `Pick.files` | The parameter no longer exists. Read bytes with `readAsBytes`. |
 | Calling `Pick.directory` on the web | It is not supported there. |
 
