@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:magic/magic.dart' show MagicFile;
 
 import '../storage/magic_file_xfile.dart';
+import '../storage/mime_types.dart';
 
 /// The Pick Facade.
 ///
@@ -373,7 +374,9 @@ class Pick {
       fileName: fileName,
       bytes: bytes,
       mimeType:
-          mimeType ?? _getMimeType(fileName) ?? 'application/octet-stream',
+          mimeType ??
+          mimeTypeForFileName(fileName) ??
+          'application/octet-stream',
     );
   }
 
@@ -391,55 +394,15 @@ class Pick {
   /// alternative was no answer at all.
   ///
   /// A file removed or made unreadable between the pick and this call maps to
-  /// a null size under file_picker 13 and to 0 under file_picker 12, whose
-  /// `length()` returns 0 when the stat throws. The constraint admits both, so
-  /// callers guarding an upload limit must treat both as unknown; see the same
-  /// warning on [MagicFile.size].
+  /// a null size, so callers guarding an upload limit must treat a null size as
+  /// unknown; see the same warning on [MagicFile.size].
   static Future<MagicFile> _platformFileToMagicFile(PlatformFile file) async {
     return MagicFile(
       path: file.path,
       name: file.name,
       size: await file.length(),
-      mimeType: _getMimeType(file.name),
+      mimeType: mimeTypeForFileName(file.name),
       bytesReader: file.readAsBytes,
     );
-  }
-
-  /// Get the MIME type for [fileName], or null when its extension is missing
-  /// or unknown to the table below.
-  static String? _getMimeType(String fileName) {
-    // A leading dot marks a hidden file, not an extension.
-    final dot = fileName.lastIndexOf('.');
-    if (dot <= 0) return null;
-
-    const mimeTypes = {
-      'jpg': 'image/jpeg',
-      'jpeg': 'image/jpeg',
-      'png': 'image/png',
-      'gif': 'image/gif',
-      'webp': 'image/webp',
-      'bmp': 'image/bmp',
-      'heic': 'image/heic',
-      'mp4': 'video/mp4',
-      'mov': 'video/quicktime',
-      'avi': 'video/x-msvideo',
-      'mkv': 'video/x-matroska',
-      'webm': 'video/webm',
-      'pdf': 'application/pdf',
-      'doc': 'application/msword',
-      'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'xls': 'application/vnd.ms-excel',
-      'xlsx':
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'ppt': 'application/vnd.ms-powerpoint',
-      'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'txt': 'text/plain',
-      'json': 'application/json',
-      'xml': 'application/xml',
-      'zip': 'application/zip',
-      'rar': 'application/vnd.rar',
-    };
-
-    return mimeTypes[fileName.substring(dot + 1).toLowerCase()];
   }
 }

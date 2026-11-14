@@ -32,7 +32,7 @@ The barrel is the only import; everything under `src/` is private. It also re-ex
 | Dart | `>=3.13.0` |
 | Flutter | `>=3.47.0` |
 | Magic | `^1.0.0`, installed and bootstrapped (`lib/config/app.dart` exists) |
-| Dependencies | `file_picker`, `image_picker` and `share_plus`, pulled in automatically |
+| Dependencies | `dowel`, `file_picker`, `image_picker` and `share_plus`, pulled in automatically |
 
 <a name="register-the-provider"></a>
 ## Register the Provider
@@ -51,7 +51,7 @@ final Map<String, dynamic> appConfig = {
 };
 ```
 
-`Pick` itself is a static facade and works without the provider. The provider has one job: in `boot()` it sets `LocalAdapterContract.downloadHandler`, so `Storage.download` can open the share sheet on mobile and desktop. Without it that call throws on those platforms, see [Download](../basics/download.md).
+`Pick` itself is a static facade and works without the provider. The provider has one job: in `boot()` it sets `LocalAdapterContract.downloadHandler`, so `Storage.download` can open the share sheet on mobile, macOS and Windows, and the save dialog on Linux, where `share_plus` cannot share a file. Without it that call throws on mobile and desktop, see [Download](../basics/download.md).
 
 <a name="verify"></a>
 ## Verify

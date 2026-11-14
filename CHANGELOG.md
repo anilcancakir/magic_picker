@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- `Storage.download` on Linux opens the save dialog with the file's bytes instead of a share sheet, because `share_plus` cannot share a file there.
+
+### Fixed
+
+- `Storage.download` no longer throws on Linux.
+- `Pick.image`, `Pick.images`, `Pick.camera`, `Pick.media`, `Pick.video` and `Pick.recordVideo` results now carry a MIME type on Android and iOS, derived from the file name, so `upload` sends a content type.
+- The `Pick.camera` and `Pick.recordVideo` fallback and `onError` behaviour is now covered by tests.
+- The picker docs now say `path` is a `blob:` URL for image picks on the web, and the README and installation page list the `dowel` dependency.
+
 ## [1.0.0] - 2026-11-14
 
 ### Added

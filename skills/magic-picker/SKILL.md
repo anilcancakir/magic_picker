@@ -7,7 +7,7 @@ when_to_use: "Use when code imports package:magic_picker or touches Pick, Picker
 
 # magic_picker
 
-File and image picking for a Magic app. The `Pick` facade opens the gallery, camera, file dialog, directory dialog and save dialog, and answers with core's `MagicFile` (a `null` or an empty list when the user cancels). `PickerServiceProvider` sets `LocalAdapterContract.downloadHandler` in `boot()`, so `Storage.download` opens the share sheet on mobile and desktop. `XFile.toMagicFile()` and `MagicFile.toXFile()` convert between the two file types.
+File and image picking for a Magic app. The `Pick` facade opens the gallery, camera, file dialog, directory dialog and save dialog, and answers with core's `MagicFile` (a `null` or an empty list when the user cancels). `PickerServiceProvider` sets `LocalAdapterContract.downloadHandler` in `boot()`, so `Storage.download` opens the share sheet on mobile, macOS and Windows and the save dialog on Linux. `XFile.toMagicFile()` and `MagicFile.toXFile()` convert between the two file types.
 
 This skill covers `magic_picker` only. The Magic framework itself (container, `Storage`, `MagicFile`, `Http`, config) is the `magic-framework` skill.
 
@@ -33,8 +33,9 @@ Requires Dart >=3.13, Flutter >=3.47 and `magic` ^1.0.0. The installer registers
 ## Download rules
 
 1. Register `PickerServiceProvider`. Without it, `Storage.download` on mobile and desktop throws `UnsupportedError` naming `magic_picker`. The web ignores the handler and downloads through the browser.
-2. The handler is a static (`LocalAdapterContract.downloadHandler`). Assign your own after `Magic.init` has finished, because `boot()` overwrites it.
-3. `PickerServiceProvider(app, share: ...)` replaces the share sheet; use it in tests only.
+2. On Linux `share_plus` cannot share a file, so the handler opens the save dialog with the file's bytes instead of a share sheet; expect a dialog there, not a sheet.
+3. The handler is a static (`LocalAdapterContract.downloadHandler`). Assign your own after `Magic.init` has finished, because `boot()` overwrites it.
+4. `PickerServiceProvider(app, share: ...)` replaces the share sheet; use it in tests only. It is never called on Linux.
 
 ## XFile rules
 
