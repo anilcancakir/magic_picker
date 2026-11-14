@@ -1,7 +1,7 @@
 ---
 name: magic-picker
 description: "Pick files, images and videos in a Magic app with the Pick facade, and share downloads through magic_picker's PickerServiceProvider."
-version: 1.0.0
+version: 1.0.1
 when_to_use: "Use when code imports package:magic_picker or touches Pick, PickerServiceProvider, toMagicFile, toXFile or Storage.download on mobile or desktop in a Magic app."
 ---
 
