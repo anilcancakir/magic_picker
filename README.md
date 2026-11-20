@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/anilcancakir/magic_picker/master/.github/magic-logo.svg" width="120" alt="Magic Logo" />
+  <img src="https://raw.githubusercontent.com/anilcancakir/magic_picker/master/.github/logo.png" width="120" alt="Magic Picker logo" />
 </p>
 
 <h1 align="center">Magic Picker</h1>
